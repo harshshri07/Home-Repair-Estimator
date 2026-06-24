@@ -1,4 +1,4 @@
-const CACHE = 'spark-estimator-v1';
+﻿const CACHE = 'spark-estimator-v2';
 const ASSETS = [
   './',
   './index.html',
