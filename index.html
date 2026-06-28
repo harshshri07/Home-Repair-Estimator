@@ -6,9 +6,9 @@
 <title>Spark Homes Estimator - Field Repair Estimator</title>
 <meta name="description" content="Mobile-first repair cost estimator for real estate acquisition agents. 123 line items, OCR, voice notes, deal analyzer, PDF reports." />
 <meta name="theme-color" content="#C2500A" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="Spark Estimator" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Spark Estimator" />
 <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%23C2500A'/><g fill='white'><path d='M58 60c0-11 9-20 20-20h24c11 0 20 9 20 20v60c0 11-9 20-20 20H78c-11 0-20-9-20-20V60zm20-8c-4 0-8 4-8 8v60c0 4 4 8 8 8h24c4 0 8-4 8-8V60c0-4-4-8-8-8H78z'/><circle cx='90' cy='90' r='12'/></g></svg>" />
 <link rel="manifest" href='data:application/manifest+json,{"name":"Spark Homes Estimator","short_name":"Spark Estimator","start_url":"./","display":"standalone","background_color":"%23FAFAF9","theme_color":"%23C2500A","orientation":"portrait","icons":[{"src":"data:image/svg+xml;utf8,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 512 512%27><rect width=%27512%27 height=%27512%27 rx=%27112%27 fill=%27%23C2500A%27/><g fill=%27white%27><path d=%27M165 170c0-31 25-56 56-56h70c31 0 56 25 56 56v172c0 31-25 56-56 56h-70c-31 0-56-25-56-56V170zm56-22c-12 0-22 10-22 22v172c0 12 10 22 22 22h70c12 0 22-10 22-22V170c0-12-10-22-22-22h-70z%27/><circle cx=%27256%27 cy=%27256%27 r=%2734%27/></g></svg>","sizes":"512x512","type":"image/svg+xml","purpose":"any maskable"}]}' />
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,6 +20,10 @@
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.0/dist/tesseract.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <style>
   :root {
     --orange: #C2500A;
@@ -134,6 +138,18 @@
   You're offline - your estimate saves automatically
 </div>
 
+<!-- AUTH OVERLAY -->
+<div id="authOverlay" class="fixed inset-0 bg-[var(--bg)] z-[200] flex flex-col items-center justify-center p-8">
+  <img src="./assets/logo.png" alt="Spark Group" class="h-10 w-auto mb-6" />
+  <h1 class="text-[26px] font-extrabold mb-2 tracking-tight">Spark Estimator</h1>
+  <p class="text-[14px] text-[var(--muted)] text-center mb-8 max-w-xs leading-relaxed">Sign in to save your walkthroughs to the cloud and access them on any device.</p>
+  <button onclick="signInWithGoogle()" class="btn btn-accent h-14 px-8 rounded-full text-[15px] w-full max-w-xs gap-3">
+    <svg width="20" height="20" viewBox="0 0 24 24"><path fill="white" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="white" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="white" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="white" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+    Continue with Google
+  </button>
+  <p class="text-[11px] text-[var(--muted-2)] mt-6 text-center max-w-xs">Your data is private and only accessible to you. Works offline after first sign-in.</p>
+</div>
+
 <!-- HEADER -->
 <header class="bg-white/85 backdrop-blur-md border-b border-[var(--line)] safe-top sticky top-0 z-40">
   <div class="flex items-center justify-between px-3 h-14 max-w-2xl mx-auto">
@@ -147,11 +163,15 @@
         <span id="projTitle" class="text-[13px] font-semibold truncate max-w-[170px]">Loading?</span>
       </div>
     </div>
-    <button id="btnSettings" class="w-10 h-10 -mr-1 flex items-center justify-center rounded-xl active:bg-[var(--line-2)]" aria-label="Settings">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
-    </button>
+    <div class="flex items-center gap-1.5 -mr-1">
+      <button id="btnSettings" class="w-10 h-10 flex items-center justify-center rounded-xl active:bg-[var(--line-2)]" aria-label="Settings">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      </button>
+      <button id="btnUserAvatar" onclick="openSettingsSheet()" class="hidden w-9 h-9 rounded-full overflow-hidden border-2 border-[var(--orange-tint)] active:opacity-70 flex-shrink-0" aria-label="Account">
+        <img id="userAvatarImg" src="" alt="" class="w-full h-full object-cover" />
+      </button>
+    </div>
   </div>
-  <!-- Progress -->
   <div class="px-4 pb-2.5 max-w-2xl mx-auto">
     <div class="flex items-center justify-between text-[11px] text-[var(--muted)] mb-1.5 font-medium">
       <span id="progressLabel">0 / 0 reviewed</span>
@@ -216,7 +236,7 @@
 <script>
 /* =========================================================
  * SPARK HOMES ESTIMATOR - Premium edition
- * Data � State � Storage � Render � Events � PWA
+ * Data ? State ? Storage ? Render ? Events ? PWA
  * ========================================================= */
 
 /* ============ DATA: 123 default line items ============ */
@@ -386,23 +406,187 @@ let state = {
   priceOverridesGlobal: {},
 };
 
+/* ============ FIREBASE ============ */
+firebase.initializeApp({
+  apiKey: "AIzaSyAHn4Cwc4UhEktoRWJDkNEh0W9k-d0oNgc",
+  authDomain: "spark-home-repair-estimator.firebaseapp.com",
+  projectId: "spark-home-repair-estimator",
+  storageBucket: "spark-home-repair-estimator.firebasestorage.app",
+  messagingSenderId: "524058304876",
+  appId: "1:524058304876:web:5e1d9e5a5f3a2f4b995349"
+});
+const _auth = firebase.auth();
+const _db   = firebase.firestore();
+_db.enablePersistence({ synchronizeTabs: true }).catch(() => {});
+
+let _currentUser = null;
+
+function _userRef(){ return _db.collection('users').doc(_currentUser.uid); }
+function _projRef(id){ return _userRef().collection('projects').doc(id); }
+
+function _projectForCloud(p){
+  const c = JSON.parse(JSON.stringify(p));
+  c._photosLocal = undefined; // photos stay local only ? too large for Firestore
+  c.photos = [];
+  return c;
+}
+
+async function _saveToCloud(){
+  if(!_currentUser) return;
+  try {
+    const batch = _db.batch();
+    for(const [id, p] of Object.entries(state.projects)){
+      batch.set(_projRef(id), _projectForCloud(p));
+    }
+    batch.set(_userRef().collection('meta').doc('settings'), {
+      priceOverridesGlobal: state.priceOverridesGlobal,
+      currentId: state.currentId
+    });
+    await batch.commit();
+  } catch(e){ console.warn('Cloud save failed', e); }
+}
+
+let _cloudSaveTimer = null;
+function _scheduleCloudSave(){
+  clearTimeout(_cloudSaveTimer);
+  _cloudSaveTimer = setTimeout(_saveToCloud, 1500);
+}
+
+async function _deleteProjectFromCloud(id){
+  if(!_currentUser) return;
+  try { await _projRef(id).delete(); } catch(e){}
+}
+
+async function _loadFromCloud(){
+  if(!_currentUser) return false;
+  try {
+    const [projSnap, settSnap] = await Promise.all([
+      _userRef().collection('projects').get(),
+      _userRef().collection('meta').doc('settings').get()
+    ]);
+    state.projects = {};
+    projSnap.forEach(doc => {
+      const p = doc.data();
+      // Restore photos from localStorage if available
+      const cached = _photoCacheGet(doc.id);
+      if(cached) p.photos = cached;
+      else p.photos = [];
+      state.projects[doc.id] = p;
+    });
+    if(settSnap.exists){
+      const s = settSnap.data();
+      state.priceOverridesGlobal = s.priceOverridesGlobal || {};
+      state.currentId = s.currentId || null;
+    }
+    _validateCurrentId();
+    // Merge any localStorage photos back into projects (offline photos)
+    _mergeLocalPhotos();
+    saveLocal();
+    return true;
+  } catch(e){ console.warn('Cloud load failed, using local cache', e); return false; }
+}
+
+/* Photo cache ? keeps photos in localStorage keyed by projectId */
+function _photoCacheGet(pid){ try{ return JSON.parse(localStorage.getItem('sp_ph_'+pid)||'null'); }catch(e){return null;} }
+function _photoCachePut(pid, photos){ try{ localStorage.setItem('sp_ph_'+pid, JSON.stringify(photos)); }catch(e){} }
+function _mergeLocalPhotos(){
+  for(const [id, p] of Object.entries(state.projects)){
+    if(!p.photos || !p.photos.length){
+      const cached = _photoCacheGet(id);
+      if(cached && cached.length) p.photos = cached;
+    }
+  }
+}
+
+function _validateCurrentId(){
+  if(!state.projects) state.projects = {};
+  if(!state.priceOverridesGlobal) state.priceOverridesGlobal = {};
+  if(!state.currentId || !state.projects[state.currentId]){
+    const ids = Object.keys(state.projects);
+    if(ids.length) state.currentId = ids[0];
+    else createProject("My First Walkthrough");
+  }
+}
+
+function signInWithGoogle(){
+  const provider = new firebase.auth.GoogleAuthProvider();
+  _auth.signInWithPopup(provider).catch(err => {
+    console.error(err);
+    toast("Sign-in failed - " + err.message);
+  });
+}
+function signOutUser(){
+  if(!confirm("Sign out? Your data is saved in the cloud.")) return;
+  _auth.signOut();
+}
+
+_auth.onAuthStateChanged(async (user) => {
+  _currentUser = user;
+  if(user){
+    // Update avatar
+    const avatarBtn = document.getElementById('btnUserAvatar');
+    const avatarImg = document.getElementById('userAvatarImg');
+    if(user.photoURL && avatarImg){ avatarImg.src = user.photoURL; avatarBtn.classList.remove('hidden'); }
+    document.getElementById('btnSettings').classList.add('hidden');
+    // Hide auth overlay
+    const overlay = document.getElementById('authOverlay');
+    if(overlay){ overlay.style.opacity = '0'; overlay.style.transition = 'opacity .3s'; setTimeout(()=>overlay.remove(), 300); }
+    // Load data
+    const loaded = await _loadFromCloud();
+    if(!loaded){ load(); }
+    importFromHash();
+    render();
+  } else {
+    // Show sign-in overlay
+    const overlay = document.getElementById('authOverlay');
+    if(!overlay){
+      const el = document.createElement('div');
+      el.id = 'authOverlay';
+      el.innerHTML = document.getElementById('authOverlayTemplate') ? document.getElementById('authOverlayTemplate').innerHTML : '';
+      document.body.appendChild(el);
+    }
+    if(overlay) overlay.style.opacity = '1';
+    document.getElementById('btnUserAvatar').classList.add('hidden');
+    document.getElementById('btnSettings').classList.remove('hidden');
+  }
+});
+
 /* ============ STORAGE ============ */
 const KEY = "sparkhomes-estimator-v2";
 const KEY_OLD = "sparkhomes-estimator-v1";
-function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){ toast("Storage full - export & remove photos"); } }
+
+function saveLocal(){
+  try {
+    // Don't write photos to main key ? too large. Store separately.
+    const slim = JSON.parse(JSON.stringify(state));
+    for(const [id, p] of Object.entries(slim.projects)){
+      _photoCachePut(id, p.photos||[]);
+      p.photos = [];
+    }
+    localStorage.setItem(KEY, JSON.stringify(slim));
+  } catch(e){ toast("Storage full - export & remove photos"); }
+}
+
+function save(){
+  // Restore photos before saving local (we stripped them above)
+  for(const [id, p] of Object.entries(state.projects)){
+    if(!p.photos || !p.photos.length){
+      const cached = _photoCacheGet(id);
+      if(cached) p.photos = cached;
+    }
+  }
+  saveLocal();
+  _scheduleCloudSave();
+}
+
 function load(){
   try {
     let raw = localStorage.getItem(KEY);
     if(!raw){ raw = localStorage.getItem(KEY_OLD); }
     if(raw){ state = JSON.parse(raw); }
   } catch(e){ console.warn("load failed", e); }
-  if(!state.projects) state.projects = {};
-  if(!state.priceOverridesGlobal) state.priceOverridesGlobal = {};
-  if(!state.currentId || !state.projects[state.currentId]){
-    const ids = Object.keys(state.projects);
-    if(ids.length){ state.currentId = ids[0]; }
-    else { createProject("My First Walkthrough"); }
-  }
+  _validateCurrentId();
+  _mergeLocalPhotos();
 }
 
 /* ============ HELPERS ============ */
@@ -441,6 +625,7 @@ function duplicateProject(id){
 }
 function deleteProject(id){
   delete state.projects[id];
+  _deleteProjectFromCloud(id);
   if(state.currentId === id){
     const ids = Object.keys(state.projects);
     state.currentId = ids[0] || null;
@@ -563,7 +748,7 @@ function render(){
             <div class="min-w-0 flex-1">
               <input value="${escapeAttr(room.name)}" oninput="renameRoom('${room.id}', this.value)" class="bg-transparent text-[15px] font-bold outline-none w-full truncate -ml-0.5" />
               <div class="flex items-center gap-2 mt-0.5">
-                <span class="text-[11px] text-[var(--muted)] font-medium">${doneG}/${allG} groups � ${escapeHtml(room.type)}</span>
+                <span class="text-[11px] text-[var(--muted)] font-medium">${doneG}/${allG} groups ? ${escapeHtml(room.type)}</span>
                 ${conditionBadge(room)}
               </div>
             </div>
@@ -592,7 +777,7 @@ function render(){
             </div>
             <div class="flex-1 min-w-0">
               <div class="font-semibold text-[14px] truncate">${escapeHtml(group.name)}</div>
-              <div class="text-[11px] text-[var(--muted)] mt-0.5">${group.noAction ? 'No action needed' : (checkedCount ? `${checkedCount} item${checkedCount===1?'':'s'} � ${fmt(gTotal)}` : `${allItems.length} options`)}</div>
+              <div class="text-[11px] text-[var(--muted)] mt-0.5">${group.noAction ? 'No action needed' : (checkedCount ? `${checkedCount} item${checkedCount===1?'':'s'} ? ${fmt(gTotal)}` : `${allItems.length} options`)}</div>
             </div>
             <svg class="text-[var(--muted-2)] transition-transform ${isOpen ? 'rotate-180' : ''}" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
           </div>
@@ -676,7 +861,7 @@ function renderPhotos(p){
           </div>
           <div class="min-w-0">
             <div class="text-[15px] font-bold">Photos & Serials</div>
-            <div class="text-[11px] text-[var(--muted)] font-medium">${photos.length} captured � OCR scans nameplates</div>
+            <div class="text-[11px] text-[var(--muted)] font-medium">${photos.length} captured ? OCR scans nameplates</div>
           </div>
         </div>
       </div>
@@ -726,7 +911,7 @@ function renderDealAnalyzer(p){
           </div>
           <div class="min-w-0">
             <div class="text-[15px] font-bold">Deal Analyzer</div>
-            <div class="text-[11px] text-[var(--muted)] font-medium">ROI � MAO � Gross profit</div>
+            <div class="text-[11px] text-[var(--muted)] font-medium">ROI ? MAO ? Gross profit</div>
           </div>
         </div>
         <span class="text-[10.5px] font-bold px-2.5 py-1 rounded-full" style="background:${vBg};color:${vColor};border:1px solid ${vBorder};">${verdict}</span>
@@ -766,7 +951,7 @@ function renderDealAnalyzer(p){
       </div>
       <div class="rounded-xl p-3 bg-[var(--bg)] border border-[var(--line)] flex items-center justify-between">
         <div>
-          <div class="text-[10px] uppercase font-bold tracking-wider text-[var(--muted)]">70% Rule � Max Allowable Offer</div>
+          <div class="text-[10px] uppercase font-bold tracking-wider text-[var(--muted)]">70% Rule ? Max Allowable Offer</div>
           <div class="text-[11px] text-[var(--muted-2)]">ARV x 0.70 - Repairs</div>
         </div>
         <div class="text-[18px] font-extrabold tnum text-[var(--orange)]">${fmt(mao70)}</div>
@@ -1082,6 +1267,17 @@ function openSettingsSheet(){
         <div class="text-[12px] text-[var(--muted)]">${storageReport()}</div>
       </div>
       <div class="text-center text-[10.5px] text-[var(--muted-2)] pt-2">SPARK HOMES &middot; v2.0 &middot; Offline-first PWA</div>
+      ${_currentUser ? `
+      <div class="card border border-[var(--line)] p-4 mt-1">
+        <div class="flex items-center gap-3 mb-3">
+          ${_currentUser.photoURL ? `<img src="${_currentUser.photoURL}" class="w-9 h-9 rounded-full flex-shrink-0" />` : `<div class="w-9 h-9 rounded-full bg-[var(--orange-soft)] flex items-center justify-center font-bold text-[var(--orange)]">${(_currentUser.displayName||'?')[0].toUpperCase()}</div>`}
+          <div class="min-w-0">
+            <div class="font-semibold text-[13px] truncate">${_currentUser.displayName || 'User'}</div>
+            <div class="text-[11px] text-[var(--muted)] truncate">${_currentUser.email}</div>
+          </div>
+        </div>
+        <button onclick="signOutUser()" class="btn btn-ghost w-full h-10 rounded-lg text-[13px] text-red-600">Sign Out</button>
+      </div>` : ''}
     </div>
   `);
 }
@@ -1089,7 +1285,7 @@ function storageReport(){
   try {
     const used = (localStorage.getItem(KEY)||'').length;
     const kb = (used/1024).toFixed(0);
-    return `${kb} KB used � ${Object.keys(state.projects).length} project${Object.keys(state.projects).length===1?'':'s'}`;
+    return `${kb} KB used ? ${Object.keys(state.projects).length} project${Object.keys(state.projects).length===1?'':'s'}`;
   } catch(e){ return "Unavailable"; }
 }
 
@@ -1329,7 +1525,7 @@ async function exportProject(){
         </div>
         <div class="flex-1">
           <div class="font-bold text-[15px]">Client-Ready PDF</div>
-          <div class="text-[12px] text-[var(--muted)]">Branded one-pager � totals � deal analysis � photos</div>
+          <div class="text-[12px] text-[var(--muted)]">Branded one-pager ? totals ? deal analysis ? photos</div>
         </div>
       </button>
       <button onclick="closeSheet(); doExportZip();" class="w-full text-left p-4 rounded-2xl bg-[var(--bg)] border border-[var(--line)] active:bg-[var(--orange-soft)] flex items-center gap-3">
@@ -1338,7 +1534,7 @@ async function exportProject(){
         </div>
         <div class="flex-1">
           <div class="font-bold text-[15px]">Excel + Photos ZIP</div>
-          <div class="text-[12px] text-[var(--muted)]">Styled .xlsx workbook � all photos � for back-office</div>
+          <div class="text-[12px] text-[var(--muted)]">Styled .xlsx workbook ? all photos ? for back-office</div>
         </div>
       </button>
     </div>
@@ -1509,7 +1705,7 @@ async function doExportPdf(){
     if(i < 3){ doc.setDrawColor(...LINE); doc.line(x+colW/2, y+18, x+colW/2, y+stripH-18); }
   });
   doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(...MUTED);
-  doc.text(`ROI ${roi.toFixed(1)}% � MAO (70% rule) $${Math.round(mao).toLocaleString()} � Holding $${Math.round(holding).toLocaleString()} � Commission $${Math.round(commission).toLocaleString()}`, W/2, y+stripH-6, {align:'center'});
+  doc.text(`ROI ${roi.toFixed(1)}% ? MAO (70% rule) $${Math.round(mao).toLocaleString()} ? Holding $${Math.round(holding).toLocaleString()} ? Commission $${Math.round(commission).toLocaleString()}`, W/2, y+stripH-6, {align:'center'});
   y += stripH + 22;
 
   // === Room breakdown table ===
@@ -1618,7 +1814,7 @@ async function doExportPdf(){
   for(let i=1; i<=pages; i++){
     doc.setPage(i);
     doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...MUTED);
-    doc.text('Spark Homes Estimator � Confidential', M, H-24);
+    doc.text('Spark Homes Estimator ? Confidential', M, H-24);
     doc.text(`Page ${i} of ${pages}`, W-M, H-24, {align:'right'});
   }
 
@@ -1688,9 +1884,13 @@ document.getElementById('btnNewProject').addEventListener('click', () => {
 })();
 
 /* ============ BOOT ============ */
-load();
-importFromHash();
-render();
+// Auth state change handler above handles load() + render()
+// Fall back to local if Firebase hasn't responded in 3s (e.g. offline on first load)
+setTimeout(() => {
+  if(!document.getElementById('authOverlay')) return; // already signed in
+  const overlay = document.getElementById('authOverlay');
+  if(overlay && overlay.parentNode) return; // showing sign-in, wait
+}, 3000);
 
 /* ============ OFFLINE BANNER ============ */
 (function initOfflineBanner(){
