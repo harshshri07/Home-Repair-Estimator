@@ -1126,37 +1126,54 @@ function onAddrInput(input, pid){
   if(val.length < 4){ closeAddrDrop(pid); return; }
   _addrTimer = setTimeout(() => fetchAddrSuggestions(val, pid), 400);
 }
+let _addrPickPending = false;
 async function fetchAddrSuggestions(query, pid){
   const drop = document.getElementById('addrDrop-' + pid);
   if(!drop) return;
   try {
-    const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=0&limit=5&q=${encodeURIComponent(query)}`;
+    const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=0&limit=6&countrycodes=us&q=${encodeURIComponent(query)}`;
     const res = await fetch(url, { headers: { 'Accept-Language': 'en' } });
     const results = await res.json();
     if(!results.length){ closeAddrDrop(pid); return; }
     drop.innerHTML = results.map(r =>
-      `<button type="button" onmousedown="pickAddr('${pid}',${JSON.stringify(r.display_name).replace(/'/g,"&#39;")})" class="w-full text-left px-4 py-2.5 hover:bg-[var(--line-2)] active:bg-[var(--orange-soft)] border-b border-[var(--line-2)] last:border-0 text-[12px] leading-snug text-[var(--ink)]">${escapeHtml(r.display_name)}</button>`
+      `<button type="button"
+        onmousedown="_addrPickPending=true"
+        ontouchstart="_addrPickPending=true"
+        onclick="pickAddr('${pid}',${JSON.stringify(r.display_name).replace(/'/g,'&#39;')})"
+        class="w-full text-left px-4 py-2.5 active:bg-[var(--orange-soft)] border-b border-[var(--line-2)] last:border-0 text-[12px] leading-snug text-[var(--ink)]"
+      >${escapeHtml(r.display_name)}</button>`
     ).join('');
     drop.classList.remove('hidden');
   } catch(e){ closeAddrDrop(pid); }
 }
 function pickAddr(pid, address){
+  _addrPickPending = false;
   const input = document.getElementById('addrInput-' + pid);
   if(input) input.value = address;
   setProjAddress(address);
-  closeAddrDrop(pid);
-  // Update Maps link
+  const drop = document.getElementById('addrDrop-' + pid);
+  if(drop) drop.classList.add('hidden');
+  // Update Maps link immediately
   const wrap = document.getElementById('addrWrap-' + pid);
   if(wrap){
     const existing = wrap.parentNode.querySelector('a[href*="maps.google"]');
     if(existing) existing.href = 'https://maps.google.com/?q=' + encodeURIComponent(address);
+    else {
+      const a = document.createElement('a');
+      a.href = 'https://maps.google.com/?q=' + encodeURIComponent(address);
+      a.target = '_blank'; a.rel = 'noopener';
+      a.className = 'inline-flex items-center gap-1 text-[11px] font-semibold text-[var(--orange)] mt-1.5 active:opacity-60';
+      a.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Open in Maps';
+      wrap.after(a);
+    }
   }
 }
 function closeAddrDrop(pid){
   setTimeout(() => {
+    if(_addrPickPending) return; // user is tapping a suggestion, don't close
     const drop = document.getElementById('addrDrop-' + pid);
     if(drop) drop.classList.add('hidden');
-  }, 150);
+  }, 200);
 }
 function openRoomMenu(rid){
   const r = current().rooms.find(x=>x.id===rid);
