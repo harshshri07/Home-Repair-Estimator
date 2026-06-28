@@ -644,6 +644,7 @@ function addRoom(type){
       id: uid(), name: g.name,
       items: g.items.map(itemId => ({ itemId, qty: 0, costOverride: null })),
       customItems: [],
+      hiddenItems: [],
       noAction: false
     }))
   };
@@ -659,7 +660,10 @@ function lineTotal(item, project){
 }
 function groupTotal(group, project){
   let t = 0;
-  for(const it of group.items) t += lineTotal(it, project);
+  for(const it of group.items) {
+    if((group.hiddenItems||[]).includes(it.itemId)) continue;
+    t += lineTotal(it, project);
+  }
   for(const it of (group.customItems||[])) t += lineTotal(it, project);
   return t;
 }
@@ -671,7 +675,7 @@ function projectTotal(project){
 }
 function groupIsActive(g){
   if(g.noAction) return true;
-  for(const it of g.items) if(it.qty > 0) return true;
+  for(const it of g.items) if(!(g.hiddenItems||[]).includes(it.itemId) && it.qty > 0) return true;
   for(const it of (g.customItems||[])) if(it.qty > 0) return true;
   return false;
 }
@@ -772,7 +776,7 @@ function render(){
 
     room.groups.forEach((group) => {
       const gTotal = groupTotal(group, p);
-      const allItems = [...group.items, ...(group.customItems||[])];
+      const allItems = [...group.items.filter(it => !(group.hiddenItems||[]).includes(it.itemId)), ...(group.customItems||[])];
       const checkedCount = allItems.filter(i => i.qty>0).length;
       const isDone = groupIsActive(group);
       const openKey = `open_${room.id}_${group.id}`;
@@ -854,7 +858,10 @@ function renderItemRow(roomId, groupId, item, isCustom, customIdx, project){
         <div class="flex-1"></div>
         <span class="text-[11px] text-[var(--muted-2)] font-medium">$</span>
         <input class="cost-input" type="number" inputmode="decimal" min="0" step="0.01" value="${cost}" oninput="setCost('${roomId}','${groupId}',${isCustom},${refIdx}, this.value)" aria-label="Unit cost" />
-        ${isCustom ? `<button onclick="deleteCustom('${roomId}','${groupId}',${customIdx})" class="w-8 h-8 rounded-lg active:bg-[var(--line-2)] text-[var(--muted-2)]" aria-label="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mx-auto"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button>` : ''}
+        ${isCustom
+          ? `<button onclick="deleteCustom('${roomId}','${groupId}',${customIdx})" class="w-8 h-8 rounded-lg active:bg-[var(--line-2)] text-[var(--muted-2)]" aria-label="Delete item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mx-auto"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button>`
+          : `<button onclick="deleteCatalogItem('${roomId}','${groupId}','${item.itemId}')" class="w-8 h-8 rounded-lg active:bg-[var(--line-2)] text-[var(--muted-2)]" aria-label="Remove item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mx-auto"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button>`
+        }
       </div>
     </div>`;
 }
@@ -1069,6 +1076,15 @@ function setCost(rid, gid, isCustom, ref, val){
 function deleteCustom(rid, gid, idx){
   const g = findGroup(rid,gid); if(!g) return;
   g.customItems.splice(idx,1); save(); render();
+}
+function deleteCatalogItem(rid, gid, itemId){
+  const g = findGroup(rid,gid); if(!g) return;
+  if(!g.hiddenItems) g.hiddenItems = [];
+  if(!g.hiddenItems.includes(itemId)) g.hiddenItems.push(itemId);
+  // Also zero out qty so it doesn't count toward totals
+  const it = g.items.find(i => i.itemId === itemId);
+  if(it) it.qty = 0;
+  save(); render();
 }
 function findGroup(rid, gid){
   const p = current();
@@ -1458,11 +1474,12 @@ function resetPrices(){
 }
 function resetProjectEstimate(){
   const p = current(); if(!p) return;
-  if(!confirm(`Reset all estimates for "${p.name}"? This clears all checked items and quantities.`)) return;
+  if(!confirm(`Reset all estimates for "${p.name}"? This clears all checked items, quantities, and removed items.`)) return;
   for(const r of p.rooms){
     for(const g of r.groups){
       for(const it of g.items){ it.qty = 0; }
       for(const it of (g.customItems||[])){ it.qty = 0; }
+      g.hiddenItems = []; // restore any deleted catalog items
     }
   }
   save(); closeSheet(); render(); toast("Estimate reset");
