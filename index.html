@@ -714,7 +714,10 @@ function render(){
         </button>
       </div>
       <input value="${escapeAttr(p.name)}" oninput="renameProject(this.value)" placeholder="Property name" class="w-full text-[18px] font-bold bg-transparent outline-none mb-1.5 -ml-0.5"/>
-      <input value="${escapeAttr(p.address||'')}" oninput="setProjAddress(this.value)" placeholder="Add address?" class="w-full text-[13px] text-[var(--muted)] bg-transparent outline-none"/>
+      <div class="relative" id="addrWrap-${p.id}">
+        <input id="addrInput-${p.id}" value="${escapeAttr(p.address||'')}" oninput="onAddrInput(this,'${p.id}')" onblur="closeAddrDrop('${p.id}')" placeholder="Add address..." class="w-full text-[13px] text-[var(--muted)] bg-transparent outline-none" autocomplete="off"/>
+        <div id="addrDrop-${p.id}" class="hidden absolute left-0 right-0 top-full mt-1 bg-white border border-[var(--line)] rounded-xl shadow-lg z-50 overflow-hidden text-[13px]"></div>
+      </div>
       ${p.address ? `<a href="https://maps.google.com/?q=${encodeURIComponent(p.address)}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-[11px] font-semibold text-[var(--orange)] mt-1.5 active:opacity-60">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
         Open in Maps
@@ -1097,6 +1100,64 @@ function setRoomNote(rid, val){
 }
 function renameProject(val){ const p = current(); if(!p) return; p.name = val; document.getElementById('projTitle').textContent = val; save(); }
 function setProjAddress(val){ const p = current(); if(!p) return; p.address = val; save(); }
+
+/* ===== Address autocomplete (Nominatim / OpenStreetMap, free, no API key) ===== */
+let _addrTimer = null;
+function onAddrInput(input, pid){
+  const val = input.value;
+  setProjAddress(val);
+  clearTimeout(_addrTimer);
+  // Re-render the "Open in Maps" link live
+  const wrap = document.getElementById('addrWrap-' + pid);
+  if(wrap){
+    const existing = wrap.parentNode.querySelector('a[href*="maps.google"]');
+    if(val && !existing){
+      const a = document.createElement('a');
+      a.href = 'https://maps.google.com/?q=' + encodeURIComponent(val);
+      a.target = '_blank'; a.rel = 'noopener';
+      a.className = 'inline-flex items-center gap-1 text-[11px] font-semibold text-[var(--orange)] mt-1.5 active:opacity-60';
+      a.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Open in Maps';
+      wrap.after(a);
+    } else if(existing){
+      if(val) existing.href = 'https://maps.google.com/?q=' + encodeURIComponent(val);
+      else existing.remove();
+    }
+  }
+  if(val.length < 4){ closeAddrDrop(pid); return; }
+  _addrTimer = setTimeout(() => fetchAddrSuggestions(val, pid), 400);
+}
+async function fetchAddrSuggestions(query, pid){
+  const drop = document.getElementById('addrDrop-' + pid);
+  if(!drop) return;
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=0&limit=5&q=${encodeURIComponent(query)}`;
+    const res = await fetch(url, { headers: { 'Accept-Language': 'en' } });
+    const results = await res.json();
+    if(!results.length){ closeAddrDrop(pid); return; }
+    drop.innerHTML = results.map(r =>
+      `<button type="button" onmousedown="pickAddr('${pid}',${JSON.stringify(r.display_name).replace(/'/g,"&#39;")})" class="w-full text-left px-4 py-2.5 hover:bg-[var(--line-2)] active:bg-[var(--orange-soft)] border-b border-[var(--line-2)] last:border-0 text-[12px] leading-snug text-[var(--ink)]">${escapeHtml(r.display_name)}</button>`
+    ).join('');
+    drop.classList.remove('hidden');
+  } catch(e){ closeAddrDrop(pid); }
+}
+function pickAddr(pid, address){
+  const input = document.getElementById('addrInput-' + pid);
+  if(input) input.value = address;
+  setProjAddress(address);
+  closeAddrDrop(pid);
+  // Update Maps link
+  const wrap = document.getElementById('addrWrap-' + pid);
+  if(wrap){
+    const existing = wrap.parentNode.querySelector('a[href*="maps.google"]');
+    if(existing) existing.href = 'https://maps.google.com/?q=' + encodeURIComponent(address);
+  }
+}
+function closeAddrDrop(pid){
+  setTimeout(() => {
+    const drop = document.getElementById('addrDrop-' + pid);
+    if(drop) drop.classList.add('hidden');
+  }, 150);
+}
 function openRoomMenu(rid){
   const r = current().rooms.find(x=>x.id===rid);
   openSheet(`
