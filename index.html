@@ -1147,9 +1147,10 @@ async function fetchAddrSuggestions(query, pid){
       const line1 = _shortAddr(a);
       const line2 = _cityStateZip(a);
       return `<button type="button"
+        data-addr="${escapeAttr(formatted)}"
         onmousedown="_addrPickPending=true"
         ontouchstart="_addrPickPending=true"
-        onclick="pickAddr('${pid}',${JSON.stringify(formatted).replace(/'/g,'&#39;')})"
+        onclick="pickAddr('${pid}', this.dataset.addr)"
         class="w-full text-left px-4 py-3 active:bg-[var(--orange-soft)] border-b border-[var(--line-2)] last:border-0 leading-snug">
         <div class="text-[13px] font-semibold text-[var(--ink)]">${escapeHtml(line1)}</div>
         ${line2 ? `<div class="text-[11px] text-[var(--muted)] mt-0.5">${escapeHtml(line2)}</div>` : ''}
