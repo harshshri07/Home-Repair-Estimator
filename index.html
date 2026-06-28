@@ -993,7 +993,16 @@ function openAddRoomSheet(){
   `);
 }
 function roomEmoji(t){
-  return {"Bathroom":"??","Kitchen":"??","Interior / General":"??","Systems & Structure":"??","Exterior":"??","Bedroom":"???","Living / Common Area":"???"}[t] || "??";
+  const map = {
+    "Bathroom":           "\uD83D\uDEC1", // ??
+    "Kitchen":            "\uD83C\uDF73", // ??
+    "Interior / General": "\uD83C\uDFE0", // ??
+    "Systems & Structure":"\u2699\uFE0F", // ??
+    "Exterior":           "\uD83C\uDF33", // ??
+    "Bedroom":            "\uD83D\uDECF\uFE0F", // ???
+    "Living / Common Area":"\uD83D\uDECB\uFE0F", // ???
+  };
+  return map[t] || "\uD83C\uDFE0";
 }
 
 function openAddItemSheet(rid, gid){
