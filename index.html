@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
-<title>Spark Homes Estimator ??? Field Repair Estimator</title>
+<title>Spark Homes Estimator - Field Repair Estimator</title>
 <meta name="description" content="Mobile-first repair cost estimator for real estate acquisition agents. 123 line items, OCR, voice notes, deal analyzer, PDF reports." />
 <meta name="theme-color" content="#C2500A" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -131,7 +131,7 @@
 <!-- OFFLINE BANNER -->
 <div id="offlineBanner" class="hidden fixed top-0 left-0 right-0 z-[999] bg-[var(--ink)] text-white text-[12px] font-semibold text-center py-2 px-4 safe-top">
   <svg class="inline-block mr-1.5 -mt-0.5" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55M5 12.55a10.94 10.94 0 0 1 5.17-2.39M10.71 5.05A16 16 0 0 1 22.56 9M1.42 9a15.91 15.91 0 0 1 4.7-2.88M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg>
-  You're offline ??? your estimate saves automatically
+  You're offline - your estimate saves automatically
 </div>
 
 <!-- HEADER -->
@@ -215,8 +215,8 @@
 
 <script>
 /* =========================================================
- * SPARK HOMES ESTIMATOR ??? Premium edition
- * Data · State · Storage · Render · Events · PWA
+ * SPARK HOMES ESTIMATOR - Premium edition
+ * Data ï¿½ State ï¿½ Storage ï¿½ Render ï¿½ Events ï¿½ PWA
  * ========================================================= */
 
 /* ============ DATA: 123 default line items ============ */
@@ -227,13 +227,13 @@ const ITEMS = {
   "ig-04":{name:"Hardwood Splicing",cost:8.40,unit:"sqft"},
   "ig-05":{name:"Vinyl Plank",cost:2.50,unit:"sqft"},
   "ig-06":{name:"Carpet",cost:1.90,unit:"sqft"},
-  "ig-07":{name:"Interior Paint ??? 2 Tone",cost:2.95,unit:"sqft"},
+  "ig-07":{name:"Interior Paint - 2 Tone",cost:2.95,unit:"sqft"},
   "ig-08":{name:"Drywall Repair",cost:900.00,unit:"1000 sqft"},
   "ig-09":{name:"Wallpaper Removal",cost:250.00,unit:"room"},
-  "ig-10":{name:"Interior Door ??? Hollow Slab",cost:125.00,unit:"ea."},
+  "ig-10":{name:"Interior Door - Hollow Slab",cost:125.00,unit:"ea."},
   "ig-11":{name:"Interior Door Hardware (Knob + Hinges + Labor)",cost:25.00,unit:"ea."},
   "ig-12":{name:"Bifold Door with Framing",cost:400.00,unit:"ea."},
-  "ig-13":{name:"Interior Door ??? Pre-hung",cost:200.00,unit:"ea."},
+  "ig-13":{name:"Interior Door - Pre-hung",cost:200.00,unit:"ea."},
   "ig-14":{name:"Front Entry Door",cost:475.00,unit:"ea."},
   "ig-15":{name:"Front Entry Door Hardware",cost:80.00,unit:"ea."},
   "ig-16":{name:"Exterior Door Hardware",cost:75.00,unit:"handle"},
@@ -257,8 +257,8 @@ const ITEMS = {
   "kt-06":{name:'Granite + 4" Splash Guard',cost:40.00,unit:"LF"},
   "kt-07":{name:"Backsplash",cost:725.00,unit:"house"},
   "kt-08":{name:"Misc Woodwork",cost:500.00,unit:"variable"},
-  "kt-09":{name:"Tile ??? Large Areas",cost:6.45,unit:"sqft"},
-  "kt-10":{name:"Tile ??? Small Areas",cost:10.00,unit:"sqft"},
+  "kt-09":{name:"Tile - Large Areas",cost:6.45,unit:"sqft"},
+  "kt-10":{name:"Tile - Small Areas",cost:10.00,unit:"sqft"},
   "kt-11":{name:"Undermount Kitchen Sink",cost:325.00,unit:"ea."},
   "kt-12":{name:"Microwave / Hood",cost:500.00,unit:"ea."},
   "kt-13":{name:"Range",cost:725.00,unit:"ea."},
@@ -270,8 +270,8 @@ const ITEMS = {
   "ba-02":{name:"New Bottom Vanity",cost:125.00,unit:"LF"},
   "ba-03":{name:'Home Depot Vanity w/ Sink (18")',cost:225.00,unit:"ea."},
   "ba-04":{name:"Toilet",cost:150.00,unit:"ea."},
-  "ba-05":{name:"Tile ??? Large Areas",cost:5.80,unit:"sqft"},
-  "ba-06":{name:"Tile ??? Small Areas",cost:10.00,unit:"sqft"},
+  "ba-05":{name:"Tile - Large Areas",cost:5.80,unit:"sqft"},
+  "ba-06":{name:"Tile - Small Areas",cost:10.00,unit:"sqft"},
   "ba-07":{name:"Reglaze Tub or Chemical Clean",cost:350.00,unit:"ea."},
   "ba-08":{name:"Reglaze Tub + Surround",cost:750.00,unit:"ea."},
   "ba-09":{name:"Reglaze Shower",cost:1325.00,unit:"ea."},
@@ -287,7 +287,7 @@ const ITEMS = {
   "as-03":{name:"Package Unit",cost:4700.00,unit:"ea."},
   "as-04":{name:"A-Coil (if no condensing unit)",cost:1625.00,unit:"ea."},
   "as-05":{name:"Ducting (if NO HVAC)",cost:3200.00,unit:"ea."},
-  "as-06":{name:"Duct Cleaning ??? Floor Vents",cost:550.00,unit:"ea."},
+  "as-06":{name:"Duct Cleaning - Floor Vents",cost:550.00,unit:"ea."},
   "as-07":{name:"Window Unit Replacement 220",cost:575.00,unit:"ea."},
   "as-08":{name:"Hot Water Heater w/ Expansion Tank",cost:1425.00,unit:"ea."},
   "as-09":{name:"Hot Water Heater Expansion Tank Only",cost:200.00,unit:"ea."},
@@ -306,9 +306,9 @@ const ITEMS = {
   "as-22":{name:"Attic Insulation",cost:1225.00,unit:"1600 sqft house"},
   "as-23":{name:"New Drywall to Studs (L&M)",cost:5.20,unit:"sqft"},
   "as-24":{name:"Aluminum Wiring",cost:2450.00,unit:"variable"},
-  "ex-01":{name:"Fence Repair ??? Chain Link / Wood Gate",cost:225.00,unit:"variable"},
-  "ex-02":{name:"Fence Repair ??? Chain Link",cost:275.00,unit:"LF"},
-  "ex-03":{name:"Fence Repair ??? Privacy 6ft",cost:30.00,unit:"LF"},
+  "ex-01":{name:"Fence Repair - Chain Link / Wood Gate",cost:225.00,unit:"variable"},
+  "ex-02":{name:"Fence Repair - Chain Link",cost:275.00,unit:"LF"},
+  "ex-03":{name:"Fence Repair - Privacy 6ft",cost:30.00,unit:"LF"},
   "ex-04":{name:"Landscaping",cost:450.00,unit:"variable"},
   "ex-05":{name:"Vinyl Siding (10'x10')",cost:300.00,unit:"square"},
   "ex-06":{name:"Tuck Pointing",cost:225.00,unit:"variable"},
@@ -320,14 +320,14 @@ const ITEMS = {
   "ex-12":{name:"Stump Grinding",cost:250.00,unit:"stump"},
   "ex-13":{name:"Aluminum Window Paint (Int/Ext)",cost:700.00,unit:"house"},
   "ex-14":{name:"Windows (3x5 sash)",cost:425.00,unit:"ea."},
-  "ex-15":{name:"Window Repair ??? Non-Insulated (6x6+)",cost:35.00,unit:"sf"},
-  "ex-16":{name:"Window Repair ??? Insulated (6x6+)",cost:40.00,unit:"sf"},
+  "ex-15":{name:"Window Repair - Non-Insulated (6x6+)",cost:35.00,unit:"sf"},
+  "ex-16":{name:"Window Repair - Insulated (6x6+)",cost:40.00,unit:"sf"},
   "ex-17":{name:"Aluminum Framed Window Pane",cost:100.00,unit:"pane"},
   "ex-18":{name:"Guttering",cost:4.15,unit:"LF"},
   "ex-19":{name:"Concrete w/ Demo",cost:200.00,unit:"sqft"},
   "ex-20":{name:"Mowing (summer, every 2 weeks)",cost:45.00,unit:"mowing"},
-  "ex-21":{name:"Garage Door ??? 1 Car",cost:975.00,unit:"ea."},
-  "ex-22":{name:"Garage Door ??? 2 Car (Installed)",cost:1225.00,unit:"ea."},
+  "ex-21":{name:"Garage Door - 1 Car",cost:975.00,unit:"ea."},
+  "ex-22":{name:"Garage Door - 2 Car (Installed)",cost:1225.00,unit:"ea."},
   "ex-23":{name:"Garage Conversion",cost:8850.00,unit:"ea."},
 };
 
@@ -389,7 +389,7 @@ let state = {
 /* ============ STORAGE ============ */
 const KEY = "sparkhomes-estimator-v2";
 const KEY_OLD = "sparkhomes-estimator-v1";
-function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){ toast("Storage full ??? export & remove photos"); } }
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){ toast("Storage full - export & remove photos"); } }
 function load(){
   try {
     let raw = localStorage.getItem(KEY);
@@ -563,7 +563,7 @@ function render(){
             <div class="min-w-0 flex-1">
               <input value="${escapeAttr(room.name)}" oninput="renameRoom('${room.id}', this.value)" class="bg-transparent text-[15px] font-bold outline-none w-full truncate -ml-0.5" />
               <div class="flex items-center gap-2 mt-0.5">
-                <span class="text-[11px] text-[var(--muted)] font-medium">${doneG}/${allG} groups · ${escapeHtml(room.type)}</span>
+                <span class="text-[11px] text-[var(--muted)] font-medium">${doneG}/${allG} groups ï¿½ ${escapeHtml(room.type)}</span>
                 ${conditionBadge(room)}
               </div>
             </div>
@@ -592,7 +592,7 @@ function render(){
             </div>
             <div class="flex-1 min-w-0">
               <div class="font-semibold text-[14px] truncate">${escapeHtml(group.name)}</div>
-              <div class="text-[11px] text-[var(--muted)] mt-0.5">${group.noAction ? 'No action needed' : (checkedCount ? `${checkedCount} item${checkedCount===1?'':'s'} · ${fmt(gTotal)}` : `${allItems.length} options`)}</div>
+              <div class="text-[11px] text-[var(--muted)] mt-0.5">${group.noAction ? 'No action needed' : (checkedCount ? `${checkedCount} item${checkedCount===1?'':'s'} ï¿½ ${fmt(gTotal)}` : `${allItems.length} options`)}</div>
             </div>
             <svg class="text-[var(--muted-2)] transition-transform ${isOpen ? 'rotate-180' : ''}" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
           </div>
@@ -676,7 +676,7 @@ function renderPhotos(p){
           </div>
           <div class="min-w-0">
             <div class="text-[15px] font-bold">Photos & Serials</div>
-            <div class="text-[11px] text-[var(--muted)] font-medium">${photos.length} captured · OCR scans nameplates</div>
+            <div class="text-[11px] text-[var(--muted)] font-medium">${photos.length} captured ï¿½ OCR scans nameplates</div>
           </div>
         </div>
       </div>
@@ -726,7 +726,7 @@ function renderDealAnalyzer(p){
           </div>
           <div class="min-w-0">
             <div class="text-[15px] font-bold">Deal Analyzer</div>
-            <div class="text-[11px] text-[var(--muted)] font-medium">ROI · MAO · Gross profit</div>
+            <div class="text-[11px] text-[var(--muted)] font-medium">ROI ï¿½ MAO ï¿½ Gross profit</div>
           </div>
         </div>
         <span class="text-[10.5px] font-bold px-2.5 py-1 rounded-full" style="background:${vBg};color:${vColor};border:1px solid ${vBorder};">${verdict}</span>
@@ -766,8 +766,8 @@ function renderDealAnalyzer(p){
       </div>
       <div class="rounded-xl p-3 bg-[var(--bg)] border border-[var(--line)] flex items-center justify-between">
         <div>
-          <div class="text-[10px] uppercase font-bold tracking-wider text-[var(--muted)]">70% Rule · Max Allowable Offer</div>
-          <div class="text-[11px] text-[var(--muted-2)]">ARV ?? 0.70 ??? Repairs</div>
+          <div class="text-[10px] uppercase font-bold tracking-wider text-[var(--muted)]">70% Rule ï¿½ Max Allowable Offer</div>
+          <div class="text-[11px] text-[var(--muted-2)]">ARV x 0.70 - Repairs</div>
         </div>
         <div class="text-[18px] font-extrabold tnum text-[var(--orange)]">${fmt(mao70)}</div>
       </div>
@@ -796,7 +796,7 @@ function renderProjectList(){
         <div class="flex items-center gap-2">
           <button onclick="switchProject('${id}')" class="flex-1 text-left min-w-0">
             <div class="font-semibold text-[14px] truncate ${isActive?'text-[var(--orange)]':'text-[var(--ink)]'}">${escapeHtml(p.name)}</div>
-            <div class="text-[11px] text-[var(--muted)] tnum mt-0.5">${fmt(t)} · ${p.rooms.length} room${p.rooms.length===1?'':'s'} · ${p.createdAt ? new Date(p.createdAt).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'2-digit'}) : ''}</div>
+            <div class="text-[11px] text-[var(--muted)] tnum mt-0.5">${fmt(t)} &middot; ${p.rooms.length} room${p.rooms.length===1?'':'s'} &middot; ${p.createdAt ? new Date(p.createdAt).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'2-digit'}) : ''}</div>
           </button>
           <button onclick="duplicateProjectAction('${id}')" class="w-9 h-9 rounded-lg text-[var(--muted)] active:bg-white" aria-label="Duplicate">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mx-auto"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
@@ -1089,7 +1089,7 @@ function storageReport(){
   try {
     const used = (localStorage.getItem(KEY)||'').length;
     const kb = (used/1024).toFixed(0);
-    return `${kb} KB used · ${Object.keys(state.projects).length} project${Object.keys(state.projects).length===1?'':'s'}`;
+    return `${kb} KB used ï¿½ ${Object.keys(state.projects).length} project${Object.keys(state.projects).length===1?'':'s'}`;
   } catch(e){ return "Unavailable"; }
 }
 
@@ -1289,7 +1289,7 @@ function importFromHash(){
 function copyEstimateToClipboard(){
   const p = current(); if(!p){ toast("No project selected"); return; }
   let lines = [];
-  lines.push(`SPARK HOMES ??? Repair Estimate`);
+  lines.push(`SPARK HOMES - Repair Estimate`);
   lines.push(`Project: ${p.name}`);
   if(p.address) lines.push(`Address: ${p.address}`);
   lines.push(`Date: ${new Date().toLocaleDateString()}`);
@@ -1297,13 +1297,13 @@ function copyEstimateToClipboard(){
   for(const r of p.rooms){
     const rTotal = roomTotal(r, p);
     if(rTotal === 0) continue;
-    lines.push(`??? ${r.name.toUpperCase()}${r.condition ? ' ['+r.condition+']' : ''}  ${fmt(rTotal)}`);
+    lines.push(`> ${r.name.toUpperCase()}${r.condition ? ' ['+r.condition+']' : ''}  ${fmt(rTotal)}`);
     for(const g of r.groups){
       for(const it of [...g.items,...(g.customItems||[])]){
         if(!it.qty) continue;
         const name = it.custom ? it.name : (ITEMS[it.itemId] ? ITEMS[it.itemId].name : it.itemId);
         const cost = it.custom ? (it.cost || 0) : (it.costOverride != null ? it.costOverride : getCost(it.itemId, p));
-        lines.push(`   ??? ${name}  ??${it.qty}  ${fmt(cost*it.qty)}`);
+        lines.push(`   - ${name}  x${it.qty}  ${fmt(cost*it.qty)}`);
       }
     }
   }
@@ -1311,7 +1311,7 @@ function copyEstimateToClipboard(){
   lines.push(`TOTAL ESTIMATE: ${fmt(projectTotal(p))}`);
   navigator.clipboard.writeText(lines.join('\n'))
     .then(() => toast("Estimate copied to clipboard"))
-    .catch(() => toast("Copy failed ??? try again"));
+    .catch(() => toast("Copy failed - try again"));
 }
 
 /* ===== EXPORT ZIP (Excel + Photos + PDF) ===== */
@@ -1329,7 +1329,7 @@ async function exportProject(){
         </div>
         <div class="flex-1">
           <div class="font-bold text-[15px]">Client-Ready PDF</div>
-          <div class="text-[12px] text-[var(--muted)]">Branded one-pager · totals · deal analysis · photos</div>
+          <div class="text-[12px] text-[var(--muted)]">Branded one-pager ï¿½ totals ï¿½ deal analysis ï¿½ photos</div>
         </div>
       </button>
       <button onclick="closeSheet(); doExportZip();" class="w-full text-left p-4 rounded-2xl bg-[var(--bg)] border border-[var(--line)] active:bg-[var(--orange-soft)] flex items-center gap-3">
@@ -1338,7 +1338,7 @@ async function exportProject(){
         </div>
         <div class="flex-1">
           <div class="font-bold text-[15px]">Excel + Photos ZIP</div>
-          <div class="text-[12px] text-[var(--muted)]">Styled .xlsx workbook · all photos · for back-office</div>
+          <div class="text-[12px] text-[var(--muted)]">Styled .xlsx workbook ï¿½ all photos ï¿½ for back-office</div>
         </div>
       </button>
     </div>
@@ -1458,7 +1458,7 @@ async function doExportPdf(){
 
   // === Header band ===
   doc.setFillColor(...INK); doc.rect(0,0,W,76,'F');
-  // Embed Spark logo (white version via canvas invert) ??? fall back to text mark
+  // Embed Spark logo (white version via canvas invert) - fall back to text mark
   try {
     const logoData = await loadLogoForPdf();
     if(logoData) doc.addImage(logoData, 'PNG', M, 24, 120, 28);
@@ -1509,7 +1509,7 @@ async function doExportPdf(){
     if(i < 3){ doc.setDrawColor(...LINE); doc.line(x+colW/2, y+18, x+colW/2, y+stripH-18); }
   });
   doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(...MUTED);
-  doc.text(`ROI ${roi.toFixed(1)}% · MAO (70% rule) $${Math.round(mao).toLocaleString()} · Holding $${Math.round(holding).toLocaleString()} · Commission $${Math.round(commission).toLocaleString()}`, W/2, y+stripH-6, {align:'center'});
+  doc.text(`ROI ${roi.toFixed(1)}% ï¿½ MAO (70% rule) $${Math.round(mao).toLocaleString()} ï¿½ Holding $${Math.round(holding).toLocaleString()} ï¿½ Commission $${Math.round(commission).toLocaleString()}`, W/2, y+stripH-6, {align:'center'});
   y += stripH + 22;
 
   // === Room breakdown table ===
@@ -1547,7 +1547,7 @@ async function doExportPdf(){
       ensureSpace(20);
       if(g.noAction){
         doc.setFont('helvetica','italic'); doc.setFontSize(9); doc.setTextColor(...MUTED);
-        doc.text(`  ${g.name} ??? no action needed`, M, y); y += 12;
+        doc.text(`  ${g.name} - no action needed`, M, y); y += 12;
         continue;
       }
       doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...MUTED);
@@ -1618,7 +1618,7 @@ async function doExportPdf(){
   for(let i=1; i<=pages; i++){
     doc.setPage(i);
     doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...MUTED);
-    doc.text('Spark Homes Estimator · Confidential', M, H-24);
+    doc.text('Spark Homes Estimator ï¿½ Confidential', M, H-24);
     doc.text(`Page ${i} of ${pages}`, W-M, H-24, {align:'right'});
   }
 
